@@ -107,18 +107,15 @@
             </div>
 
             <!-- Quick Navigation Tabs -->
-            <nav class="flex items-center justify-center space-x-1 text-xs font-medium w-full sm:w-auto">
-                <a href="#cockpit" class="px-2.5 py-1 rounded-md text-cyan-400 hover:bg-slate-800/80 transition flex items-center gap-1 border border-cyan-500/20">
+            <nav class="flex items-center justify-center space-x-2 text-xs font-medium w-full sm:w-auto">
+                <a href="#cockpit" class="px-3 py-1 rounded-md text-cyan-400 hover:bg-slate-800/80 transition flex items-center gap-1 border border-cyan-500/20">
                     <i class="fa-solid fa-gauge-high"></i> <span>Cabina</span>
                 </a>
-                <a href="#converter" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
+                <a href="#converter" class="px-3 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
                     <i class="fa-solid fa-calculator"></i> <span>Convertidor</span>
                 </a>
-                <a href="#glossary" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
+                <a href="#glossary" class="px-3 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
                     <i class="fa-solid fa-book"></i> <span>Glosario</span>
-                </a>
-                <a href="#quiz" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
-                    <i class="fa-solid fa-graduation-cap"></i> <span>Quiz</span>
                 </a>
             </nav>
         </div>
@@ -180,7 +177,7 @@
                         <label class="font-semibold text-slate-200">Altitud de Cámara:</label>
                         <span id="altSliderVal" class="font-tech text-cyan-400 font-bold text-sm">0 ft</span>
                     </div>
-                    <input type="range" id="altRange" min="0" max="45000" step="500" value="0" class="w-full" oninput="updateSimulation()">
+                    <input type="range" id="altRange" min="0" max="45000" step="100" value="0" class="w-full" oninput="updateSimulation()">
                 </div>
 
                 <div class="space-y-1.5">
@@ -195,11 +192,11 @@
             <!-- Relojes -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-                <!-- RELOJ 1: Altimeter -->
+                <!-- RELOJ 1: Altimeter (3 Agujas) -->
                 <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
                     <span class="text-[9px] font-bold uppercase text-cyan-400 font-tech">ALTIMETER</span>
                     <h4 class="text-xs font-bold text-white">Altitud de Cámara</h4>
-                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                    <svg class="w-40 h-40" viewBox="0 0 200 200">
                         <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
                         <circle cx="100" cy="100" r="82" fill="#121824" stroke="#00f0ff" stroke-width="1" stroke-dasharray="2 4"/>
                         <g text-anchor="middle" fill="#94a3b8" class="font-tech text-[12px] font-bold">
@@ -214,32 +211,49 @@
                             <text x="34" y="82">8</text>
                             <text x="58" y="46">9</text>
                         </g>
-                        <g id="altNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
-                            <line x1="100" y1="100" x2="100" y2="35" stroke="#00f0ff" stroke-width="3" stroke-linecap="round"/>
-                            <circle cx="100" cy="100" r="6" fill="#00f0ff"/>
+
+                        <!-- 1. Aguja Larga Finita con triángulo (Mide las vueltas completas de 10,000 ft) -->
+                        <g id="altTenThousandsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
+                            <line x1="100" y1="100" x2="100" y2="20" stroke="#ff2a6d" stroke-width="1.5"/>
+                            <polygon points="100,14 96,22 104,22" fill="#ff2a6d"/>
                         </g>
+
+                        <!-- 2. Aguja Corta y Gruesa (Mide 1,000, 2,000, 3,000 ft... en cada número) -->
+                        <g id="altThousandsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
+                            <line x1="100" y1="100" x2="100" y2="50" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+                        </g>
+
+                        <!-- 3. Aguja Mediana Delgada (Mide cada 100 pies / 1 vuelta por cada 1,000 ft) -->
+                        <g id="altHundredsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
+                            <line x1="100" y1="100" x2="100" y2="28" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round"/>
+                        </g>
+
+                        <circle cx="100" cy="100" r="5" fill="#00f0ff"/>
                     </svg>
                     <div class="bg-slate-950/80 w-full p-2 rounded-lg border border-slate-800 font-tech">
                         <div class="text-lg font-bold text-cyan-400 glow-text" id="altGaugeDisplay">0 FT</div>
                     </div>
                 </div>
 
-                <!-- RELOJ 2: VSI -->
+                <!-- RELOJ 2: VSI (Velocidad Vertical) -->
                 <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
                     <span class="text-[9px] font-bold uppercase text-emerald-400 font-tech">VSI / ROC-ROD</span>
                     <h4 class="text-xs font-bold text-white">Velocidad Vertical</h4>
-                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                    <svg class="w-40 h-40" viewBox="0 0 200 200">
                         <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
-                        <text x="30" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
-                        <text x="60" y="50" fill="#00ff66" font-size="10" class="font-tech">+2</text>
+                        <text x="28" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
+                        <text x="58" y="52" fill="#00ff66" font-size="10" class="font-tech">+2</text>
                         <text x="100" y="32" fill="#00ff66" font-size="10" class="font-tech">+4</text>
-                        <text x="140" y="50" fill="#00ff66" font-size="10" class="font-tech">+6</text>
-                        <text x="60" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
-                        <text x="100" y="178" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
-                        <text x="140" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
+                        <text x="142" y="52" fill="#00ff66" font-size="10" class="font-tech">+6</text>
+                        
+                        <text x="58" y="156" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
+                        <text x="100" y="176" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
+                        <text x="142" y="156" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
+
+                        <!-- Aguja VSI apuntando a 0 al iniciar -->
                         <g id="vsiNeedleGroup" transform="rotate(-90 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
-                            <circle cx="100" cy="100" r="6" fill="#00ff66"/>
+                            <circle cx="100" cy="100" r="5" fill="#00ff66"/>
                         </g>
                     </svg>
                     <div class="bg-slate-950/80 w-full p-2 rounded-lg border border-slate-800 font-tech">
@@ -251,7 +265,7 @@
                 <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
                     <span class="text-[9px] font-bold uppercase text-amber-400 font-tech">BARO / AMBIENT</span>
                     <h4 class="text-xs font-bold text-white">Presión Ambiental</h4>
-                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                    <svg class="w-40 h-40" viewBox="0 0 200 200">
                         <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
                         <text x="100" y="90" text-anchor="middle" fill="#94a3b8" font-size="10" class="font-tech">PRESS. (mmHg)</text>
                         <text id="baroSvgVal" x="100" y="115" text-anchor="middle" fill="#ffb703" font-size="20" font-weight="bold" class="font-tech">760.0</text>
@@ -324,20 +338,10 @@
                         <tr>
                             <td class="p-2.5 font-bold text-white">Hypoxia</td>
                             <td class="p-2.5 text-cyan-300">Hipoxia</td>
-                            <td class="p-2.5 text-slate-400">Estado de deficiencia de oxígeno en los tejidos del cuerpo por baja presión parcial de O2.</td>
+                            <td class="p-2.5 text-slate-400">Estado de deficiencia de oxígeno en los tejidos por baja presión parcial de O2.</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </section>
-
-        <!-- MÓDULO 4: QUIZ INTERACTIVO -->
-        <section id="quiz" class="cockpit-card p-4 sm:p-6 rounded-xl space-y-4">
-            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-graduation-cap text-cyan-400"></i> Evaluación de Conocimientos
-            </h3>
-            <div id="quizContainer" class="space-y-4 text-xs sm:text-sm">
-                <!-- Pregunta cargada vía JS -->
             </div>
         </section>
 
@@ -357,10 +361,9 @@
 
     <!-- LÓGICA EN JAVASCRIPT INTEGRADA -->
     <script>
-        // === 1. LÓGICA DE SIMULACIÓN Y RELOJES ===
         function updateSimulation() {
-            const alt = parseFloat(document.getElementById('altRange').value);
-            const vsi = parseFloat(document.getElementById('vsiRange').value);
+            const alt = parseFloat(document.getElementById('altRange').value) || 0;
+            const vsi = parseFloat(document.getElementById('vsiRange').value) || 0;
 
             // Actualizar etiquetas numéricas
             document.getElementById('altSliderVal').innerText = alt.toLocaleString() + ' ft';
@@ -368,15 +371,27 @@
             document.getElementById('altGaugeDisplay').innerText = alt.toLocaleString() + ' FT';
             document.getElementById('vsiGaugeDisplay').innerText = (vsi > 0 ? '+' : '') + vsi.toLocaleString() + ' FT/MIN';
 
-            // Rotación de Aguja Altimeter (0 - 10000 ft por vuelta)
-            const altAngle = (alt % 10000) * (360 / 10000);
-            document.getElementById('altNeedleGroup').setAttribute('transform', `rotate(${altAngle} 100 100)`);
+            // --- LÓGICA CORREGIDA DEL ALTIMETRO AERONÁUTICO ---
+            
+            // 1. Aguja Mediana Delgada (Cientos de pies): 1 vuelta completa (360°) = 1,000 ft (Mide de 100 en 100)
+            const hundredsAngle = (alt % 1000) * (360 / 1000);
+            document.getElementById('altHundredsNeedleGroup').setAttribute('transform', `rotate(${hundredsAngle} 100 100)`);
 
-            // Rotación de Aguja VSI (-6000 a +6000 ft/min mapeado a -170deg a +10deg)
+            // 2. Aguja Corta y Gruesa (Miles de pies): 1 vuelta completa = 10,000 ft (Avanza por 1,000, 2,000, 3,000 ft...)
+            const thousandsAngle = (alt % 10000) * (360 / 10000);
+            document.getElementById('altThousandsNeedleGroup').setAttribute('transform', `rotate(${thousandsAngle} 100 100)`);
+
+            // 3. Aguja Larga Finita con Triángulo (Decenas de miles de pies / Vueltas del reloj):
+            // Posiciona en el número según las vueltas completas de 10,000 pies (ej. a los 10k ft apunta al 1, 20k ft apunta al 2...)
+            const tenThousandsAngle = (alt / 100000) * 360;
+            document.getElementById('altTenThousandsNeedleGroup').setAttribute('transform', `rotate(${tenThousandsAngle} 100 100)`);
+
+            // --- LÓGICA DE VSI (Velocidad Vertical) ---
+            // 0 ft/min está exactamente en -90deg (horizontal a la izquierda)
             const vsiAngle = -90 + (vsi / 6000) * 80;
             document.getElementById('vsiNeedleGroup').setAttribute('transform', `rotate(${vsiAngle} 100 100)`);
 
-            // Cálculo aproximado de Presión Barométrica ambiental según altitud
+            // --- CÁLCULO DE PRESIÓN BAROMÉTRICA ---
             const mmHg = Math.max(140, 760 * Math.exp(-alt / 23000));
             const inHg = mmHg / 25.4;
             const hPa = mmHg * 1.33322;
@@ -396,7 +411,7 @@
             setProfile(25000, 6000);
         }
 
-        // === 2. LÓGICA DEL CONVERTIDOR DE PRESION ===
+        // --- CONVERTIDOR DE PRESIÓN ---
         function convertFromMmHg(val) {
             const mm = parseFloat(val) || 0;
             document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
@@ -417,59 +432,9 @@
             document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
         }
 
-        // === 3. LÓGICA DEL QUIZ INTERACTIVO ===
-        const quizQuestions = [
-            {
-                q: "¿Qué unidad estándar mide la velocidad de ascenso o descenso en una cámara hipobárica?",
-                options: ["PSI (Pounds per Square Inch)", "ft/min (Feet per Minute)", "mmHg (Millimeters of Mercury)", "hPa (Hectopascals)"],
-                correct: 1,
-                desc: "El VSI (Vertical Speed Indicator) mide el cambio de altitud simulado en pies por minuto (ft/min)."
-            },
-            {
-                q: "¿Cuál es la presión atmosférica normal a nivel del mar en mmHg?",
-                options: ["29.92 mmHg", "1013 mmHg", "760 mmHg", "14.7 mmHg"],
-                correct: 2,
-                desc: "A nivel del mar la presión estándar es 760 mmHg (equivalente a 29.92 inHg o 1013 hPa)."
-            }
-        ];
-
-        let currentQ = 0;
-
-        function loadQuiz() {
-            const q = quizQuestions[currentQ];
-            let html = `
-                <p class="font-bold text-white mb-2">${currentQ + 1}. ${q.q}</p>
-                <div class="space-y-2">
-            `;
-            q.options.forEach((opt, idx) => {
-                html += `
-                    <button onclick="checkAnswer(${idx})" class="w-full text-left p-2.5 rounded bg-slate-900 border border-slate-700 hover:border-cyan-500 transition text-slate-300">
-                        ${opt}
-                    </button>
-                `;
-            });
-            html += `</div><div id="quizFeedback" class="mt-3 hidden p-2.5 rounded text-xs"></div>`;
-            document.getElementById('quizContainer').innerHTML = html;
-        }
-
-        function checkAnswer(selected) {
-            const q = quizQuestions[currentQ];
-            const feedback = document.getElementById('quizFeedback');
-            feedback.classList.remove('hidden', 'bg-emerald-950/80', 'bg-red-950/80', 'text-emerald-300', 'text-red-300');
-
-            if (selected === q.correct) {
-                feedback.classList.add('bg-emerald-950/80', 'text-emerald-300', 'border', 'border-emerald-500/50');
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>¡Correcto!</strong> ${q.desc}`;
-            } else {
-                feedback.classList.add('bg-red-950/80', 'text-red-300', 'border', 'border-red-500/50');
-                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>Incorrecto.</strong> ${q.desc}`;
-            }
-        }
-
-        // Inicializar al cargar la página
+        // Inicializar al cargar
         window.onload = function() {
             updateSimulation();
-            loadQuiz();
         };
     </script>
 </body>
