@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador e Guía Interactiva de Cámara Hipobárica</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Share Tech Mono & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cockpit: {
+                            bg: '#0a0e17',
+                            panel: '#121824',
+                            border: '#1e293b',
+                            accent: '#00f0ff',
+                            warning: '#ffb703',
+                            danger: '#ff2a6d',
+                            green: '#00ff66'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Share Tech Mono"', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070a10;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 70%),
+                linear-gradient(rgba(18, 24, 36, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(18, 24, 36, 0.3) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
+        }
+
+        .font-tech {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        }
+
+        .glow-green {
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
+        }
+
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 42, 109, 0.6);
+        }
+
+        .cockpit-card {
+            background: rgba(18, 24, 36, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Gauge custom styles */
+        .gauge-dial {
+            transition: all 0.2s ease-out;
+        }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: #1e293b;
+            border-radius: 8px;
+            height: 8px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #00f0ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00f0ff;
+        }
+
+        /* Hide scrollbars for slick modern look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header & Navigation -->
+    <header class="border-b border-slate-800 bg-cockpit-panel/90 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row justify-between items-center gap-3 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-3">
+                <div class="w-9 h-9 rounded-lg bg-cyan-950 border border-cyan-500/50 flex items-center justify-center text-cyan-400 text-lg font-bold">
+                    <i class="fa-solid fa-plane-departure"></i>
+                </div>
+                <div class="text-center sm:text-left">
+                    <h1 class="text-base sm:text-xl font-extrabold tracking-wider text-white flex items-center justify-center sm:justify-start gap-2">
+                        HYPOBARIC <span class="text-cyan-400 font-tech">SIM-LAB</span>
+                    </h1>
+                    <p class="text-[11px] text-cyan-400/90 font-mono font-medium">Desarrollado por ALFREDO BELANDRIA</p>
+                </div>
+            </div>
+
+            <!-- Quick Navigation Tabs -->
+            <nav class="flex items-center justify-center space-x-1 text-xs font-medium w-full sm:w-auto">
+                <a href="#cockpit" class="px-2.5 py-1 rounded-md text-cyan-400 hover:bg-slate-800/80 transition flex items-center gap-1 border border-cyan-500/20">
+                    <i class="fa-solid fa-gauge-high"></i> <span>Cabina</span>
+                </a>
+                <a href="#converter" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
+                    <i class="fa-solid fa-calculator"></i> <span>Convertidor</span>
+                </a>
+                <a href="#glossary" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
+                    <i class="fa-solid fa-book"></i> <span>Glosario</span>
+                </a>
+                <a href="#quiz" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-cyan-400 hover:bg-slate-800 transition flex items-center gap-1">
+                    <i class="fa-solid fa-graduation-cap"></i> <span>Quiz</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 space-y-6 flex-grow">
+
+        <!-- Banner Introductivo -->
+        <section class="cockpit-card rounded-xl p-4 sm:p-6 text-center sm:text-left relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="max-w-3xl space-y-3 mx-auto sm:mx-0">
+                <div class="inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[11px] font-tech">
+                    <i class="fa-solid fa-shield-halved"></i> FISIOLOGÍA DE VUELO
+                </div>
+                <h2 class="text-xl sm:text-3xl font-black tracking-tight text-white leading-snug">
+                    Simulador e Indicadores de Cámara Hipobárica
+                </h2>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                    Monitoreo de <span class="text-amber-400">altitud</span>, <span class="text-emerald-400">velocidad vertical (VSI)</span> y <span class="text-cyan-400">presión barométrica</span> en la cámara.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2.5 pt-1">
+                    <a href="#cockpit" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Iniciar Simulador
+                    </a>
+                    <button onclick="runDecompressionPreset()" class="w-full sm:w-auto px-4 py-2 rounded-lg border border-red-500/50 bg-red-950/30 hover:bg-red-900/40 text-red-400 text-xs font-semibold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Descompresión Rápida
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 1: CABINA VIRTUAL / INTERACTIVE GAUGES -->
+        <section id="cockpit" class="space-y-4">
+            <div class="flex flex-col items-center text-center sm:text-left sm:items-start justify-between gap-2">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center justify-center sm:justify-start gap-2">
+                        <i class="fa-solid fa-gauge text-cyan-400"></i> Relojes e Indicadores
+                    </h3>
+                    <p class="text-xs text-slate-400">Ajusta los controles para simular la presión aeronáutica.</p>
+                </div>
+                
+                <!-- Botones de Perfiles Pré-establecidos -->
+                <div class="flex flex-wrap justify-center gap-1.5 w-full sm:w-auto pt-1">
+                    <button onclick="setProfile(0, 0)" class="flex-1 sm:flex-none px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
+                        Nivel del Mar
+                    </button>
+                    <button onclick="setProfile(18000, 2000)" class="flex-1 sm:flex-none px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-cyan-300 border border-cyan-800 transition">
+                        FL180
+                    </button>
+                    <button onclick="setProfile(25000, 4000)" class="flex-1 sm:flex-none px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 border border-amber-800 transition">
+                        25,000 ft
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de Controles / Sliders master -->
+            <div class="cockpit-card p-4 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4 border-l-4 border-l-cyan-500">
+                <!-- Slider Altitud -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-mountain text-cyan-400"></i> Altitud:
+                        </label>
+                        <span id="altSliderVal" class="font-tech text-cyan-400 font-bold text-sm">0 ft</span>
+                    </div>
+                    <input type="range" id="altRange" min="0" max="45000" step="500" value="0" class="w-full" oninput="updateSimulation()">
+                    <div class="flex justify-between text-[9px] text-slate-500 font-tech">
+                        <span>0 ft</span>
+                        <span>18k ft</span>
+                        <span>35k ft</span>
+                        <span>45k ft</span>
+                    </div>
+                </div>
+
+                <!-- Slider Rate of Climb / Descent -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs">
+                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrows-up-down text-emerald-400"></i> Vel. Asc/Desc:
+                        </label>
+                        <span id="vsiSliderVal" class="font-tech text-emerald-400 font-bold text-sm">0 ft/min</span>
+                    </div>
+                    <input type="range" id="vsiRange" min="-6000" max="6000" step="250" value="0" class="w-full" oninput="updateSimulation()">
+                    <div class="flex justify-between text-[9px] text-slate-500 font-tech">
+                        <span>-6,000</span>
+                        <span>0</span>
+                        <span>+6,000 ft/min</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Relojes/Gauges -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <!-- RELOJ 1: Altimeter -->
+                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-cyan-500/40 transition text-center">
+                    <div class="flex justify-between items-start">
+                        <div class="text-left">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-cyan-400 font-tech">ALTIMETER</span>
+                            <h4 class="text-sm font-bold text-white">Altitud</h4>
+                        </div>
+                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-cyan-400 cursor-pointer text-xs" onclick="showInfoModal('altimeter')"></i>
+                    </div>
+
+                    <!-- SVG Gauge Canvas Altimeter -->
+                    <div class="relative flex justify-center items-center py-1">
+                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
+                            <!-- Background Outer Circle -->
+                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                            <circle cx="100" cy="100" r="82" fill="#121824" stroke="#00f0ff" stroke-width="1" stroke-dasharray="2 4"/>
+                            
+                            <!-- Dial Ticks (0-9 representation) -->
+                            <g text-anchor="middle" fill="#94a3b8" class="font-tech text-[12px] font-bold">
+                                <text x="100" y="32">0</text>
+                                <text x="142" y="46">1</text>
+                                <text x="166" y="82">2</text>
+                                <text x="166" y="126">3</text>
+                                <text x="142" y="162">4</text>
+                                <text x="100" y="176">5</text>
+                                <text x="58" y="162">6</text>
+                                <text x="34" y="126">7</text>
+                                <text x="34" y="82">8</text>
+                                <text x="58" y="46">9</text>
+                            </g>
+
+                            <!-- Needle -->
+                            <g id="altNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
+                                <line x1="100" y1="100" x2="100" y2="35" stroke="#00f0ff" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="100" cy="100" r="6" fill="#00f0ff"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech">
+                        <div class="text-lg font-bold text-cyan-400 glow-text" id="altGaugeDisplay">0 FT</div>
+                        <div class="text-[10px] text-slate-400">Chamber Altitude</div>
+                    </div>
+                </div>
+
+                <!-- RELOJ 2: VSI (Rate of Climb / Descent) -->
+                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-emerald-500/40 transition text-center">
+                    <div class="flex justify-between items-start">
+                        <div class="text-left">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-400 font-tech">VSI / ROC-ROD</span>
+                            <h4 class="text-sm font-bold text-white">Vel. Vertical</h4>
+                        </div>
+                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-emerald-400 cursor-pointer text-xs" onclick="showInfoModal('vsi')"></i>
+                    </div>
+
+                    <!-- SVG Gauge Canvas VSI -->
+                    <div class="relative flex justify-center items-center py-1">
+                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                            <!-- VSI Arch UP/DOWN -->
+                            <text x="30" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
+                            <text x="60" y="50" fill="#00ff66" font-size="10" class="font-tech">+2</text>
+                            <text x="100" y="32" fill="#00ff66" font-size="10" class="font-tech">+4</text>
+                            <text x="140" y="50" fill="#00ff66" font-size="10" class="font-tech">+6</text>
+                            
+                            <text x="60" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
+                            <text x="100" y="178" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
+                            <text x="140" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
+
+                            <!-- Needle -->
+                            <g id="vsiNeedleGroup" transform="rotate(-90 100 100)" class="gauge-dial">
+                                <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="100" cy="100" r="6" fill="#00ff66"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech">
+                        <div class="text-lg font-bold text-emerald-400 glow-green" id="vsiGaugeDisplay">0 FT/MIN</div>
+                        <div class="text-[10px] text-slate-400">Rate of Climb / Descent</div>
+                    </div>
+                </div>
+
+                <!-- RELOJ 3: Ambient Barometric Pressure -->
+                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-amber-500/40 transition text-center">
+                    <div class="flex justify-between items-start">
+                        <div class="text-left">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-amber-400 font-tech">BARO / AMBIENT</span>
+                            <h4 class="text-sm font-bold text-white">Presión Ambiental</h4>
+                        </div>
+                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-amber-400 cursor-pointer text-xs" onclick="showInfoModal('baro')"></i>
+                    </div>
+
+                    <!-- Digital & Dial Baro Indicator -->
+                    <div class="relative flex justify-center items-center py-1">
+                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                            <!-- Arch from 760 (Sea level) to 140 (high alt) -->
+                            <path d="M 30 140 A 80 80 0 1 1 170 140" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
+                            <path id="baroArc" d="M 30 140 A 80 80 0 1 1 170 140" fill="none" stroke="#ffb703" stroke-width="8" stroke-dasharray="380" stroke-dashoffset="0" stroke-linecap="round"/>
+                            
+                            <text x="100" y="90" text-anchor="middle" fill="#94a3b8" font-size="10" class="font-tech">PRESS. (mmHg)</text>
+                            <text id="baroSvgVal" x="100" y="115" text-anchor="middle" fill="#ffb703" font-size="20" font-weight="bold" class="font-tech">760.0</text>
+                        </svg>
+                    </div>
+
+                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech space-y-0.5">
+                        <div class="text-xs font-bold text-amber-400" id="baroInHgDisplay">29.92 inHg</div>
+                        <div class="text-[10px] text-slate-300" id="baroHpaDisplay">1013 hPa</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer / Pie de página con atribución -->
+    <footer class="border-t border-slate-800 bg-cockpit-panel/80 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
+            <p class="font-mono text-cyan-400 font-semibold">
+                Desarrollado por Alfredo Belandria
+            </p>
+            <p class="text-[10px] text-slate-500">
+                © 2026 Hypobaric Sim-Lab. Guía Educativa de Fisiología Aeronáutica.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
