@@ -61,10 +61,6 @@
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
         }
 
-        .glow-red {
-            text-shadow: 0 0 10px rgba(255, 42, 109, 0.6);
-        }
-
         .cockpit-card {
             background: rgba(18, 24, 36, 0.85);
             backdrop-filter: blur(12px);
@@ -72,12 +68,10 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* Gauge custom styles */
         .gauge-dial {
-            transition: all 0.2s ease-out;
+            transition: transform 0.2s ease-out;
         }
 
-        /* Custom range slider styling */
         input[type=range] {
             -webkit-appearance: none;
             background: #1e293b;
@@ -92,15 +86,6 @@
             background: #00f0ff;
             cursor: pointer;
             box-shadow: 0 0 10px #00f0ff;
-        }
-
-        /* Hide scrollbars for slick modern look */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
         }
     </style>
 </head>
@@ -117,7 +102,7 @@
                     <h1 class="text-base sm:text-xl font-extrabold tracking-wider text-white flex items-center justify-center sm:justify-start gap-2">
                         HYPOBARIC <span class="text-cyan-400 font-tech">SIM-LAB</span>
                     </h1>
-                    <p class="text-[11px] text-cyan-400/90 font-mono font-medium">Desarrollado por ALFREDO BELANDRIA</p>
+                    <p class="text-[11px] text-cyan-400/90 font-mono font-medium">Desarrollado por Alfredo Belandria</p>
                 </div>
             </div>
 
@@ -140,11 +125,10 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 space-y-6 flex-grow">
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 space-y-8 flex-grow">
 
         <!-- Banner Introductivo -->
         <section class="cockpit-card rounded-xl p-4 sm:p-6 text-center sm:text-left relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="max-w-3xl space-y-3 mx-auto sm:mx-0">
                 <div class="inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[11px] font-tech">
                     <i class="fa-solid fa-shield-halved"></i> FISIOLOGÍA DE VUELO
@@ -153,10 +137,10 @@
                     Simulador e Indicadores de Cámara Hipobárica
                 </h2>
                 <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                    Monitoreo de <span class="text-amber-400">altitud</span>, <span class="text-emerald-400">velocidad vertical (VSI)</span> y <span class="text-cyan-400">presión barométrica</span> en la cámara.
+                    Monitoreo interactivo de <span class="text-amber-400">altitud</span>, <span class="text-emerald-400">velocidad vertical (VSI)</span> y <span class="text-cyan-400">presión barométrica</span>.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2.5 pt-1">
-                    <a href="#cockpit" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                    <a href="#cockpit" class="w-full sm:w-auto px-4 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-play"></i> Iniciar Simulador
                     </a>
                     <button onclick="runDecompressionPreset()" class="w-full sm:w-auto px-4 py-2 rounded-lg border border-red-500/50 bg-red-950/30 hover:bg-red-900/40 text-red-400 text-xs font-semibold transition flex items-center justify-center gap-2">
@@ -166,7 +150,7 @@
             </div>
         </section>
 
-        <!-- MÓDULO 1: CABINA VIRTUAL / INTERACTIVE GAUGES -->
+        <!-- MÓDULO 1: CABINA VIRTUAL -->
         <section id="cockpit" class="space-y-4">
             <div class="flex flex-col items-center text-center sm:text-left sm:items-start justify-between gap-2">
                 <div>
@@ -176,7 +160,6 @@
                     <p class="text-xs text-slate-400">Ajusta los controles para simular la presión aeronáutica.</p>
                 </div>
                 
-                <!-- Botones de Perfiles Pré-establecidos -->
                 <div class="flex flex-wrap justify-center gap-1.5 w-full sm:w-auto pt-1">
                     <button onclick="setProfile(0, 0)" class="flex-1 sm:flex-none px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 border border-slate-700 transition">
                         Nivel del Mar
@@ -190,152 +173,90 @@
                 </div>
             </div>
 
-            <!-- Panel de Controles / Sliders master -->
+            <!-- Panel de Sliders -->
             <div class="cockpit-card p-4 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4 border-l-4 border-l-cyan-500">
-                <!-- Slider Altitud -->
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center text-xs">
-                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
-                            <i class="fa-solid fa-mountain text-cyan-400"></i> Altitud:
-                        </label>
+                        <label class="font-semibold text-slate-200">Altitud de Cámara:</label>
                         <span id="altSliderVal" class="font-tech text-cyan-400 font-bold text-sm">0 ft</span>
                     </div>
                     <input type="range" id="altRange" min="0" max="45000" step="500" value="0" class="w-full" oninput="updateSimulation()">
-                    <div class="flex justify-between text-[9px] text-slate-500 font-tech">
-                        <span>0 ft</span>
-                        <span>18k ft</span>
-                        <span>35k ft</span>
-                        <span>45k ft</span>
-                    </div>
                 </div>
 
-                <!-- Slider Rate of Climb / Descent -->
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center text-xs">
-                        <label class="font-semibold text-slate-200 flex items-center gap-1.5">
-                            <i class="fa-solid fa-arrows-up-down text-emerald-400"></i> Vel. Asc/Desc:
-                        </label>
+                        <label class="font-semibold text-slate-200">Vel. Ascenso/Descenso (VSI):</label>
                         <span id="vsiSliderVal" class="font-tech text-emerald-400 font-bold text-sm">0 ft/min</span>
                     </div>
                     <input type="range" id="vsiRange" min="-6000" max="6000" step="250" value="0" class="w-full" oninput="updateSimulation()">
-                    <div class="flex justify-between text-[9px] text-slate-500 font-tech">
-                        <span>-6,000</span>
-                        <span>0</span>
-                        <span>+6,000 ft/min</span>
-                    </div>
                 </div>
             </div>
 
-            <!-- Grid de Relojes/Gauges -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Relojes -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
                 <!-- RELOJ 1: Altimeter -->
-                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-cyan-500/40 transition text-center">
-                    <div class="flex justify-between items-start">
-                        <div class="text-left">
-                            <span class="text-[9px] font-bold uppercase tracking-wider text-cyan-400 font-tech">ALTIMETER</span>
-                            <h4 class="text-sm font-bold text-white">Altitud</h4>
-                        </div>
-                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-cyan-400 cursor-pointer text-xs" onclick="showInfoModal('altimeter')"></i>
-                    </div>
-
-                    <!-- SVG Gauge Canvas Altimeter -->
-                    <div class="relative flex justify-center items-center py-1">
-                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
-                            <!-- Background Outer Circle -->
-                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
-                            <circle cx="100" cy="100" r="82" fill="#121824" stroke="#00f0ff" stroke-width="1" stroke-dasharray="2 4"/>
-                            
-                            <!-- Dial Ticks (0-9 representation) -->
-                            <g text-anchor="middle" fill="#94a3b8" class="font-tech text-[12px] font-bold">
-                                <text x="100" y="32">0</text>
-                                <text x="142" y="46">1</text>
-                                <text x="166" y="82">2</text>
-                                <text x="166" y="126">3</text>
-                                <text x="142" y="162">4</text>
-                                <text x="100" y="176">5</text>
-                                <text x="58" y="162">6</text>
-                                <text x="34" y="126">7</text>
-                                <text x="34" y="82">8</text>
-                                <text x="58" y="46">9</text>
-                            </g>
-
-                            <!-- Needle -->
-                            <g id="altNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
-                                <line x1="100" y1="100" x2="100" y2="35" stroke="#00f0ff" stroke-width="3" stroke-linecap="round"/>
-                                <circle cx="100" cy="100" r="6" fill="#00f0ff"/>
-                            </g>
-                        </svg>
-                    </div>
-
-                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech">
+                <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
+                    <span class="text-[9px] font-bold uppercase text-cyan-400 font-tech">ALTIMETER</span>
+                    <h4 class="text-xs font-bold text-white">Altitud de Cámara</h4>
+                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                        <circle cx="100" cy="100" r="82" fill="#121824" stroke="#00f0ff" stroke-width="1" stroke-dasharray="2 4"/>
+                        <g text-anchor="middle" fill="#94a3b8" class="font-tech text-[12px] font-bold">
+                            <text x="100" y="32">0</text>
+                            <text x="142" y="46">1</text>
+                            <text x="166" y="82">2</text>
+                            <text x="166" y="126">3</text>
+                            <text x="142" y="162">4</text>
+                            <text x="100" y="176">5</text>
+                            <text x="58" y="162">6</text>
+                            <text x="34" y="126">7</text>
+                            <text x="34" y="82">8</text>
+                            <text x="58" y="46">9</text>
+                        </g>
+                        <g id="altNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
+                            <line x1="100" y1="100" x2="100" y2="35" stroke="#00f0ff" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="100" cy="100" r="6" fill="#00f0ff"/>
+                        </g>
+                    </svg>
+                    <div class="bg-slate-950/80 w-full p-2 rounded-lg border border-slate-800 font-tech">
                         <div class="text-lg font-bold text-cyan-400 glow-text" id="altGaugeDisplay">0 FT</div>
-                        <div class="text-[10px] text-slate-400">Chamber Altitude</div>
                     </div>
                 </div>
 
-                <!-- RELOJ 2: VSI (Rate of Climb / Descent) -->
-                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-emerald-500/40 transition text-center">
-                    <div class="flex justify-between items-start">
-                        <div class="text-left">
-                            <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-400 font-tech">VSI / ROC-ROD</span>
-                            <h4 class="text-sm font-bold text-white">Vel. Vertical</h4>
-                        </div>
-                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-emerald-400 cursor-pointer text-xs" onclick="showInfoModal('vsi')"></i>
-                    </div>
-
-                    <!-- SVG Gauge Canvas VSI -->
-                    <div class="relative flex justify-center items-center py-1">
-                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
-                            <!-- VSI Arch UP/DOWN -->
-                            <text x="30" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
-                            <text x="60" y="50" fill="#00ff66" font-size="10" class="font-tech">+2</text>
-                            <text x="100" y="32" fill="#00ff66" font-size="10" class="font-tech">+4</text>
-                            <text x="140" y="50" fill="#00ff66" font-size="10" class="font-tech">+6</text>
-                            
-                            <text x="60" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
-                            <text x="100" y="178" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
-                            <text x="140" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
-
-                            <!-- Needle -->
-                            <g id="vsiNeedleGroup" transform="rotate(-90 100 100)" class="gauge-dial">
-                                <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
-                                <circle cx="100" cy="100" r="6" fill="#00ff66"/>
-                            </g>
-                        </svg>
-                    </div>
-
-                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech">
+                <!-- RELOJ 2: VSI -->
+                <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
+                    <span class="text-[9px] font-bold uppercase text-emerald-400 font-tech">VSI / ROC-ROD</span>
+                    <h4 class="text-xs font-bold text-white">Velocidad Vertical</h4>
+                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                        <text x="30" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
+                        <text x="60" y="50" fill="#00ff66" font-size="10" class="font-tech">+2</text>
+                        <text x="100" y="32" fill="#00ff66" font-size="10" class="font-tech">+4</text>
+                        <text x="140" y="50" fill="#00ff66" font-size="10" class="font-tech">+6</text>
+                        <text x="60" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
+                        <text x="100" y="178" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
+                        <text x="140" y="160" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
+                        <g id="vsiNeedleGroup" transform="rotate(-90 100 100)" class="gauge-dial">
+                            <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="100" cy="100" r="6" fill="#00ff66"/>
+                        </g>
+                    </svg>
+                    <div class="bg-slate-950/80 w-full p-2 rounded-lg border border-slate-800 font-tech">
                         <div class="text-lg font-bold text-emerald-400 glow-green" id="vsiGaugeDisplay">0 FT/MIN</div>
-                        <div class="text-[10px] text-slate-400">Rate of Climb / Descent</div>
                     </div>
                 </div>
 
-                <!-- RELOJ 3: Ambient Barometric Pressure -->
-                <div class="cockpit-card p-4 rounded-xl flex flex-col justify-between space-y-3 hover:border-amber-500/40 transition text-center">
-                    <div class="flex justify-between items-start">
-                        <div class="text-left">
-                            <span class="text-[9px] font-bold uppercase tracking-wider text-amber-400 font-tech">BARO / AMBIENT</span>
-                            <h4 class="text-sm font-bold text-white">Presión Ambiental</h4>
-                        </div>
-                        <i class="fa-solid fa-circle-info text-slate-500 hover:text-amber-400 cursor-pointer text-xs" onclick="showInfoModal('baro')"></i>
-                    </div>
-
-                    <!-- Digital & Dial Baro Indicator -->
-                    <div class="relative flex justify-center items-center py-1">
-                        <svg class="w-36 h-36 sm:w-40 sm:h-40" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
-                            <!-- Arch from 760 (Sea level) to 140 (high alt) -->
-                            <path d="M 30 140 A 80 80 0 1 1 170 140" fill="none" stroke="#334155" stroke-width="8" stroke-linecap="round"/>
-                            <path id="baroArc" d="M 30 140 A 80 80 0 1 1 170 140" fill="none" stroke="#ffb703" stroke-width="8" stroke-dasharray="380" stroke-dashoffset="0" stroke-linecap="round"/>
-                            
-                            <text x="100" y="90" text-anchor="middle" fill="#94a3b8" font-size="10" class="font-tech">PRESS. (mmHg)</text>
-                            <text id="baroSvgVal" x="100" y="115" text-anchor="middle" fill="#ffb703" font-size="20" font-weight="bold" class="font-tech">760.0</text>
-                        </svg>
-                    </div>
-
-                    <div class="bg-slate-950/80 p-2 rounded-lg border border-slate-800 font-tech space-y-0.5">
+                <!-- RELOJ 3: Baro -->
+                <div class="cockpit-card p-4 rounded-xl flex flex-col items-center space-y-3 text-center">
+                    <span class="text-[9px] font-bold uppercase text-amber-400 font-tech">BARO / AMBIENT</span>
+                    <h4 class="text-xs font-bold text-white">Presión Ambiental</h4>
+                    <svg class="w-36 h-36" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                        <text x="100" y="90" text-anchor="middle" fill="#94a3b8" font-size="10" class="font-tech">PRESS. (mmHg)</text>
+                        <text id="baroSvgVal" x="100" y="115" text-anchor="middle" fill="#ffb703" font-size="20" font-weight="bold" class="font-tech">760.0</text>
+                    </svg>
+                    <div class="bg-slate-950/80 w-full p-2 rounded-lg border border-slate-800 font-tech">
                         <div class="text-xs font-bold text-amber-400" id="baroInHgDisplay">29.92 inHg</div>
                         <div class="text-[10px] text-slate-300" id="baroHpaDisplay">1013 hPa</div>
                     </div>
@@ -344,9 +265,85 @@
             </div>
         </section>
 
+        <!-- MÓDULO 2: CONVERTIDOR DE UNIDADES -->
+        <section id="converter" class="cockpit-card p-4 sm:p-6 rounded-xl space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-calculator text-cyan-400"></i> Convertidor de Presión Barométrica
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">mmHg (Milímetros de Hg)</label>
+                    <input type="number" id="inputMmHg" value="760" oninput="convertFromMmHg(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-cyan-400 font-tech text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">inHg (Pulgadas de Hg)</label>
+                    <input type="number" id="inputInHg" value="29.92" oninput="convertFromInHg(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-amber-400 font-tech text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">hPa / mbar (Hectopascales)</label>
+                    <input type="number" id="inputHpa" value="1013.25" oninput="convertFromHpa(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-emerald-400 font-tech text-sm">
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 3: GLOSARIO BILINGÜE -->
+        <section id="glossary" class="cockpit-card p-4 sm:p-6 rounded-xl space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-book text-cyan-400"></i> Glosario de Términos (EN / ES)
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left text-slate-300 border-collapse">
+                    <thead class="bg-slate-900 text-cyan-400 font-tech uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="p-2.5">Término en Inglés</th>
+                            <th class="p-2.5">Traducción Español</th>
+                            <th class="p-2.5">Descripción / Significado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 font-sans">
+                        <tr>
+                            <td class="p-2.5 font-bold text-white">Chamber Altitude</td>
+                            <td class="p-2.5 text-cyan-300">Altitud de Cámara</td>
+                            <td class="p-2.5 text-slate-400">Altitud equivalente simulada mediante reducción de presión barométrica.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold text-white">Rate of Climb (ROC)</td>
+                            <td class="p-2.5 text-cyan-300">Velocidad de Ascenso</td>
+                            <td class="p-2.5 text-slate-400">Rapidez con la que disminuye la presión ambiental (medido en ft/min).</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold text-white">Rate of Descent (ROD)</td>
+                            <td class="p-2.5 text-cyan-300">Velocidad de Descenso</td>
+                            <td class="p-2.5 text-slate-400">Rapidez con la que se incrementa la presión para retornar al nivel del mar.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold text-white">Rapid Decompression</td>
+                            <td class="p-2.5 text-cyan-300">Descompresión Rápida</td>
+                            <td class="p-2.5 text-slate-400">Pérdida súbita de presión ambiental en pocos segundos.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-bold text-white">Hypoxia</td>
+                            <td class="p-2.5 text-cyan-300">Hipoxia</td>
+                            <td class="p-2.5 text-slate-400">Estado de deficiencia de oxígeno en los tejidos del cuerpo por baja presión parcial de O2.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MÓDULO 4: QUIZ INTERACTIVO -->
+        <section id="quiz" class="cockpit-card p-4 sm:p-6 rounded-xl space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-cyan-400"></i> Evaluación de Conocimientos
+            </h3>
+            <div id="quizContainer" class="space-y-4 text-xs sm:text-sm">
+                <!-- Pregunta cargada vía JS -->
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer / Pie de página con atribución -->
+    <!-- Footer -->
     <footer class="border-t border-slate-800 bg-cockpit-panel/80 py-4 mt-8">
         <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-1">
             <p class="font-mono text-cyan-400 font-semibold">
@@ -358,5 +355,122 @@
         </div>
     </footer>
 
+    <!-- LÓGICA EN JAVASCRIPT INTEGRADA -->
+    <script>
+        // === 1. LÓGICA DE SIMULACIÓN Y RELOJES ===
+        function updateSimulation() {
+            const alt = parseFloat(document.getElementById('altRange').value);
+            const vsi = parseFloat(document.getElementById('vsiRange').value);
+
+            // Actualizar etiquetas numéricas
+            document.getElementById('altSliderVal').innerText = alt.toLocaleString() + ' ft';
+            document.getElementById('vsiSliderVal').innerText = (vsi > 0 ? '+' : '') + vsi.toLocaleString() + ' ft/min';
+            document.getElementById('altGaugeDisplay').innerText = alt.toLocaleString() + ' FT';
+            document.getElementById('vsiGaugeDisplay').innerText = (vsi > 0 ? '+' : '') + vsi.toLocaleString() + ' FT/MIN';
+
+            // Rotación de Aguja Altimeter (0 - 10000 ft por vuelta)
+            const altAngle = (alt % 10000) * (360 / 10000);
+            document.getElementById('altNeedleGroup').setAttribute('transform', `rotate(${altAngle} 100 100)`);
+
+            // Rotación de Aguja VSI (-6000 a +6000 ft/min mapeado a -170deg a +10deg)
+            const vsiAngle = -90 + (vsi / 6000) * 80;
+            document.getElementById('vsiNeedleGroup').setAttribute('transform', `rotate(${vsiAngle} 100 100)`);
+
+            // Cálculo aproximado de Presión Barométrica ambiental según altitud
+            const mmHg = Math.max(140, 760 * Math.exp(-alt / 23000));
+            const inHg = mmHg / 25.4;
+            const hPa = mmHg * 1.33322;
+
+            document.getElementById('baroSvgVal').textContent = mmHg.toFixed(1);
+            document.getElementById('baroInHgDisplay').textContent = inHg.toFixed(2) + ' inHg';
+            document.getElementById('baroHpaDisplay').textContent = Math.round(hPa) + ' hPa';
+        }
+
+        function setProfile(alt, vsi) {
+            document.getElementById('altRange').value = alt;
+            document.getElementById('vsiRange').value = vsi;
+            updateSimulation();
+        }
+
+        function runDecompressionPreset() {
+            setProfile(25000, 6000);
+        }
+
+        // === 2. LÓGICA DEL CONVERTIDOR DE PRESION ===
+        function convertFromMmHg(val) {
+            const mm = parseFloat(val) || 0;
+            document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
+            document.getElementById('inputHpa').value = (mm * 1.33322).toFixed(1);
+        }
+
+        function convertFromInHg(val) {
+            const inch = parseFloat(val) || 0;
+            const mm = inch * 25.4;
+            document.getElementById('inputMmHg').value = mm.toFixed(1);
+            document.getElementById('inputHpa').value = (mm * 1.33322).toFixed(1);
+        }
+
+        function convertFromHpa(val) {
+            const hpa = parseFloat(val) || 0;
+            const mm = hpa / 1.33322;
+            document.getElementById('inputMmHg').value = mm.toFixed(1);
+            document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
+        }
+
+        // === 3. LÓGICA DEL QUIZ INTERACTIVO ===
+        const quizQuestions = [
+            {
+                q: "¿Qué unidad estándar mide la velocidad de ascenso o descenso en una cámara hipobárica?",
+                options: ["PSI (Pounds per Square Inch)", "ft/min (Feet per Minute)", "mmHg (Millimeters of Mercury)", "hPa (Hectopascals)"],
+                correct: 1,
+                desc: "El VSI (Vertical Speed Indicator) mide el cambio de altitud simulado en pies por minuto (ft/min)."
+            },
+            {
+                q: "¿Cuál es la presión atmosférica normal a nivel del mar en mmHg?",
+                options: ["29.92 mmHg", "1013 mmHg", "760 mmHg", "14.7 mmHg"],
+                correct: 2,
+                desc: "A nivel del mar la presión estándar es 760 mmHg (equivalente a 29.92 inHg o 1013 hPa)."
+            }
+        ];
+
+        let currentQ = 0;
+
+        function loadQuiz() {
+            const q = quizQuestions[currentQ];
+            let html = `
+                <p class="font-bold text-white mb-2">${currentQ + 1}. ${q.q}</p>
+                <div class="space-y-2">
+            `;
+            q.options.forEach((opt, idx) => {
+                html += `
+                    <button onclick="checkAnswer(${idx})" class="w-full text-left p-2.5 rounded bg-slate-900 border border-slate-700 hover:border-cyan-500 transition text-slate-300">
+                        ${opt}
+                    </button>
+                `;
+            });
+            html += `</div><div id="quizFeedback" class="mt-3 hidden p-2.5 rounded text-xs"></div>`;
+            document.getElementById('quizContainer').innerHTML = html;
+        }
+
+        function checkAnswer(selected) {
+            const q = quizQuestions[currentQ];
+            const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden', 'bg-emerald-950/80', 'bg-red-950/80', 'text-emerald-300', 'text-red-300');
+
+            if (selected === q.correct) {
+                feedback.classList.add('bg-emerald-950/80', 'text-emerald-300', 'border', 'border-emerald-500/50');
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> <strong>¡Correcto!</strong> ${q.desc}`;
+            } else {
+                feedback.classList.add('bg-red-950/80', 'text-red-300', 'border', 'border-red-500/50');
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> <strong>Incorrecto.</strong> ${q.desc}`;
+            }
+        }
+
+        // Inicializar al cargar la página
+        window.onload = function() {
+            updateSimulation();
+            loadQuiz();
+        };
+    </script>
 </body>
 </html>
