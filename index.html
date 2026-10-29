@@ -253,7 +253,7 @@
                         <text x="100" y="176" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
                         <text x="142" y="156" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
 
-                        <!-- Aguja VSI dibujada verticalmente desde el centro hacia la izquierda (apuntando al 0) -->
+                        <!-- Aguja VSI -->
                         <g id="vsiNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
                             <circle cx="100" cy="100" r="5" fill="#00ff66"/>
@@ -375,23 +375,19 @@
             document.getElementById('vsiGaugeDisplay').innerText = (vsi > 0 ? '+' : '') + vsi.toLocaleString() + ' FT/MIN';
 
             // --- LÓGICA DEL ALTIMETRO ---
-            // 1. Aguja Cientos de pies
             const hundredsAngle = (alt % 1000) * (360 / 1000);
             document.getElementById('altHundredsNeedleGroup').setAttribute('transform', `rotate(${hundredsAngle} 100 100)`);
 
-            // 2. Aguja Miles de pies
             const thousandsAngle = (alt % 10000) * (360 / 10000);
             document.getElementById('altThousandsNeedleGroup').setAttribute('transform', `rotate(${thousandsAngle} 100 100)`);
 
-            // 3. Aguja Decenas de miles de pies
             const tenThousandsAngle = (alt / 100000) * 360;
             document.getElementById('altTenThousandsNeedleGroup').setAttribute('transform', `rotate(${tenThousandsAngle} 100 100)`);
 
             // --- LÓGICA CORREGIDA DEL VSI ---
-            // Cuando vsi = 0, el ángulo es 0deg (apunta a la izquierda hacia el 0).
-            // Cuando vsi > 0 (Ascenso, verde), rota hacia arriba en dirección horaria (ej. +6000 ft/min = -80deg).
-            // Cuando vsi < 0 (Descenso, rojo), rota hacia abajo en dirección antihoraria (ej. -6000 ft/min = +80deg).
-            const vsiAngle = -(vsi / 6000) * 80;
+            // Invertido el signo para que valores positivos (ascenso) vayan hacia arriba (zona verde) 
+            // y valores negativos (descenso) vayan hacia abajo (zona roja).
+            const vsiAngle = (vsi / 6000) * 80;
             document.getElementById('vsiNeedleGroup').setAttribute('transform', `rotate(${vsiAngle} 100 100)`);
 
             // --- PRESIÓN BAROMÉTRICA ---
