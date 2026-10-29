@@ -212,18 +212,18 @@
                             <text x="58" y="46">9</text>
                         </g>
 
-                        <!-- 1. Aguja Larga Finita con triángulo (Mide las vueltas completas de 10,000 ft) -->
+                        <!-- Aguja Larga Finita con triángulo (Vueltas de 10,000 ft) -->
                         <g id="altTenThousandsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="100" y2="20" stroke="#ff2a6d" stroke-width="1.5"/>
                             <polygon points="100,14 96,22 104,22" fill="#ff2a6d"/>
                         </g>
 
-                        <!-- 2. Aguja Corta y Gruesa (Mide 1,000, 2,000, 3,000 ft... en cada número) -->
+                        <!-- Aguja Corta y Gruesa (Miles de pies: 1k, 2k, 3k...) -->
                         <g id="altThousandsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="100" y2="50" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
                         </g>
 
-                        <!-- 3. Aguja Mediana Delgada (Mide cada 100 pies / 1 vuelta por cada 1,000 ft) -->
+                        <!-- Aguja Mediana Delgada (Cientos de pies: 100 ft) -->
                         <g id="altHundredsNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="100" y2="28" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round"/>
                         </g>
@@ -241,17 +241,20 @@
                     <h4 class="text-xs font-bold text-white">Velocidad Vertical</h4>
                     <svg class="w-40 h-40" viewBox="0 0 200 200">
                         <circle cx="100" cy="100" r="90" fill="#0b0f19" stroke="#1e293b" stroke-width="6"/>
+                        <!-- Números del Dial VSI -->
                         <text x="28" y="104" fill="#94a3b8" font-size="12" class="font-tech font-bold">0</text>
+                        <!-- Zona Verde (Ascenso +) arriba -->
                         <text x="58" y="52" fill="#00ff66" font-size="10" class="font-tech">+2</text>
                         <text x="100" y="32" fill="#00ff66" font-size="10" class="font-tech">+4</text>
                         <text x="142" y="52" fill="#00ff66" font-size="10" class="font-tech">+6</text>
                         
+                        <!-- Zona Roja (Descenso -) abajo -->
                         <text x="58" y="156" fill="#ff2a6d" font-size="10" class="font-tech">-2</text>
                         <text x="100" y="176" fill="#ff2a6d" font-size="10" class="font-tech">-4</text>
                         <text x="142" y="156" fill="#ff2a6d" font-size="10" class="font-tech">-6</text>
 
-                        <!-- Aguja VSI apuntando a 0 al iniciar -->
-                        <g id="vsiNeedleGroup" transform="rotate(-90 100 100)" class="gauge-dial">
+                        <!-- Aguja VSI dibujada verticalmente desde el centro hacia la izquierda (apuntando al 0) -->
+                        <g id="vsiNeedleGroup" transform="rotate(0 100 100)" class="gauge-dial">
                             <line x1="100" y1="100" x2="35" y2="100" stroke="#00ff66" stroke-width="3" stroke-linecap="round"/>
                             <circle cx="100" cy="100" r="5" fill="#00ff66"/>
                         </g>
@@ -371,27 +374,27 @@
             document.getElementById('altGaugeDisplay').innerText = alt.toLocaleString() + ' FT';
             document.getElementById('vsiGaugeDisplay').innerText = (vsi > 0 ? '+' : '') + vsi.toLocaleString() + ' FT/MIN';
 
-            // --- LÓGICA CORREGIDA DEL ALTIMETRO AERONÁUTICO ---
-            
-            // 1. Aguja Mediana Delgada (Cientos de pies): 1 vuelta completa (360°) = 1,000 ft (Mide de 100 en 100)
+            // --- LÓGICA DEL ALTIMETRO ---
+            // 1. Aguja Cientos de pies
             const hundredsAngle = (alt % 1000) * (360 / 1000);
             document.getElementById('altHundredsNeedleGroup').setAttribute('transform', `rotate(${hundredsAngle} 100 100)`);
 
-            // 2. Aguja Corta y Gruesa (Miles de pies): 1 vuelta completa = 10,000 ft (Avanza por 1,000, 2,000, 3,000 ft...)
+            // 2. Aguja Miles de pies
             const thousandsAngle = (alt % 10000) * (360 / 10000);
             document.getElementById('altThousandsNeedleGroup').setAttribute('transform', `rotate(${thousandsAngle} 100 100)`);
 
-            // 3. Aguja Larga Finita con Triángulo (Decenas de miles de pies / Vueltas del reloj):
-            // Posiciona en el número según las vueltas completas de 10,000 pies (ej. a los 10k ft apunta al 1, 20k ft apunta al 2...)
+            // 3. Aguja Decenas de miles de pies
             const tenThousandsAngle = (alt / 100000) * 360;
             document.getElementById('altTenThousandsNeedleGroup').setAttribute('transform', `rotate(${tenThousandsAngle} 100 100)`);
 
-            // --- LÓGICA DE VSI (Velocidad Vertical) ---
-            // 0 ft/min está exactamente en -90deg (horizontal a la izquierda)
-            const vsiAngle = -90 + (vsi / 6000) * 80;
+            // --- LÓGICA CORREGIDA DEL VSI ---
+            // Cuando vsi = 0, el ángulo es 0deg (apunta a la izquierda hacia el 0).
+            // Cuando vsi > 0 (Ascenso, verde), rota hacia arriba en dirección horaria (ej. +6000 ft/min = -80deg).
+            // Cuando vsi < 0 (Descenso, rojo), rota hacia abajo en dirección antihoraria (ej. -6000 ft/min = +80deg).
+            const vsiAngle = -(vsi / 6000) * 80;
             document.getElementById('vsiNeedleGroup').setAttribute('transform', `rotate(${vsiAngle} 100 100)`);
 
-            // --- CÁLCULO DE PRESIÓN BAROMÉTRICA ---
+            // --- PRESIÓN BAROMÉTRICA ---
             const mmHg = Math.max(140, 760 * Math.exp(-alt / 23000));
             const inHg = mmHg / 25.4;
             const hPa = mmHg * 1.33322;
@@ -411,7 +414,6 @@
             setProfile(25000, 6000);
         }
 
-        // --- CONVERTIDOR DE PRESIÓN ---
         function convertFromMmHg(val) {
             const mm = parseFloat(val) || 0;
             document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
@@ -432,7 +434,6 @@
             document.getElementById('inputInHg').value = (mm / 25.4).toFixed(2);
         }
 
-        // Inicializar al cargar
         window.onload = function() {
             updateSimulation();
         };
