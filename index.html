@@ -384,10 +384,8 @@
             const tenThousandsAngle = (alt / 100000) * 360;
             document.getElementById('altTenThousandsNeedleGroup').setAttribute('transform', `rotate(${tenThousandsAngle} 100 100)`);
 
-            // --- LÓGICA CORREGIDA DEL VSI ---
-            // Invertido el signo para que valores positivos (ascenso) vayan hacia arriba (zona verde) 
-            // y valores negativos (descenso) vayan hacia abajo (zona roja).
-            const vsiAngle = (vsi / 6000) * 80;
+            // --- LÓGICA DEL VSI CALIBRADA A 135 GRADOS PARA LLEGAR EXACTAMENTE A +6 / -6 ---
+            const vsiAngle = (vsi / 6000) * 135;
             document.getElementById('vsiNeedleGroup').setAttribute('transform', `rotate(${vsiAngle} 100 100)`);
 
             // --- PRESIÓN BAROMÉTRICA ---
